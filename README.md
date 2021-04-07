@@ -9,5 +9,5 @@ Eventually, it will be possible to determine the threshold of motion coherence a
 
 N.B.: I do not have any specific article since this task is very famous. However, I found a [really interesting paper](https://www.sciencedirect.com/science/article/pii/S004269890900100X) comparing different RDM algorithms. A good start would be the "White Noise" algorithm since it is the oldest one, but it could be nice to compare different algorithms if there is enough time !
 
-
+See you soon!
 
