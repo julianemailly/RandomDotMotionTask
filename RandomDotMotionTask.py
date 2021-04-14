@@ -3,7 +3,7 @@ import random as r
 import numpy as np 
 import math as m 
 
-N_DOTS=10
+N_DOTS=25
 LEFT_RESPONSE=misc.constants.K_LEFT
 RIGHT_RESPONSE=misc.constants.K_RIGHT
 MOTION_COHERENCE=np.tile(np.linspace(0,100,5),5)
@@ -14,20 +14,23 @@ COLOR_OF_DOTS=misc.constants.C_WHITE
 RADIUS_OF_ARENA=100
 RADIUS_OF_DOTS=5
 WIDTH_INNER_SQUARE=2*RADIUS_OF_ARENA/m.sqrt(2)
-MOVEMENT_TO_THE_LEFT=[-1,0]
-MOVEMENT_TO_THE_RIGHT=[1,0]
+MOVEMENT_TO_THE_LEFT=[-2,0]
+MOVEMENT_TO_THE_RIGHT=[2,0]
 
+def generate_and_present_blankscreen():
+	stimuli.BlankScreen().present()
 
-exp = design.Experiment(name="Random Dot Motion Task")
-control.initialize(exp)
+def generate_cue():
+	return (stimuli.FixCross(size=(50, 50), line_width=4))
 
-cue = stimuli.FixCross(size=(50, 50), line_width=4)
-blankscreen = stimuli.BlankScreen()
-instructions = stimuli.TextScreen("Instructions",
-    f"""blablabla.""")
+def display_cue(cue):
+	cue.present()
 
+def generate_arena() : 
+	return(stimuli.Circle(radius=RADIUS_OF_ARENA+2*RADIUS_OF_DOTS,colour=COLOR_OF_ARENA))
 
-trials=np.random.shuffle(MOTION_COHERENCE)
+def display_arena(arena) : 
+	arena.present(clear=False,update=False)
 
 def distance_to_center(point):
 	x,y=point[0],point[1]
@@ -62,75 +65,84 @@ def erase_previous_position_of_dots_with_erase_list(erase_list) :
 	for erase in erase_list : 
 		erase.present(clear=False,update=False)
 
-def generate_lists_coherent_motion_dots_and_random_motion_dots(motion_coherence,dot_list): 
-	dot_belongs_to_coherent_list=np.random.binomial(1,motion_coherence/100,len(dot_list))
-	coherent_dot_list=[]
-	random_dot_list=[]
-	for k in range (len(dot_list)) :
-		if dot_belongs_to_coherent_list[k] :
-			coherent_dot_list.append(dot_list[k])
-		else : 
-			random_dot_list.append(dot_list[k])
-	return(coherent_dots,random_dots)
+def list_of_indexes_of_dots_with_coherent_movement(motion_coherence,dot_list):
+	total_number_dots=len(dot_list)
+	number_dots_to_select= int(total_number_dots*motion_coherence/100)
+	indexes_all_dots=[k for k in range (total_number_dots)]
+	indexes_of_coherent_dots=np.random.choice(indexes_all_dots,number_dots_to_select)
+	return(indexes_of_coherent_dots)
 
-def coherent_movement(coherent_dot_list,direction) : 
+def move_one_coherent_dot(coherent_dot,direction) : 
 	if direction=='left' :
-		movement=MOVEMENT_TO_THE_LEFT
-	elif direction=='right':
-		movement=MOVEMENT_TO_THE_RIGHT
-	for dot in coherent_dot_list :
-		dot.move(movement)
+		coherent_dot.move(MOVEMENT_TO_THE_LEFT)
+	elif direction == 'right' :
+		coherent_dot.move(MOVEMENT_TO_THE_RIGHT)
 
+def move_one_random_dot(random_dot) : 
+	movement=[np.random.random()*10-5,np.random.random()*10-5]
+	random_dot.move(movement)
 
-def random_movement(random_dot_list) : 
-	for dot in random_dot_list : 
-		movement=[np.random.random*2-1,np.random.random*2-1]
-		dot.move(movement)
+def update_all_dots_position(dot_list,indexes_of_coherent_dots,direction) : 
+	n_dots=len(dot_list)
+	for i in range (n_dots) :
+		if i in indexes_of_coherent_dots : 
+			move_one_coherent_dot(dot_list[i],direction)
+		else : 
+			move_one_random_dot(dot_list[i])
 
 def dots_out_of_arena(dot_list) : 
+	dots_out=[]
 	for dot in dot_list : 
 		if distance_to_center(dot.position)>RADIUS_OF_ARENA : 
-			dots_out_of_arena.append(dot)
-	return(dots_out_of_arena)
+			dots_out.append(dot)
+	return(dots_out)
 
-#general structure of algorithm (White Noise algo) 
-#disply fixation cross
-#for each trial : 
-#display arena in grey
-#create n random dots
-# show dots
-#during a certain time, make dots move : for each 'frame' displayed 
-#split list in two according to desire motion coherence : one part with coherent motion dots CMD, other part with random mption dots RMD
-#erase previous position of the dots
-#make both part move either coherently according to the chosen direction of this trial (left vs right) for the CMD or randomly for RMD
-#retrieve the dots that are now outside of the area and erase them
-#make some dots spawn in the area to compensate
-#repeat for each frame displayed
+def relocate_dots_out_of_arena(dots_out):
+	for dot in dots_out:
+		new_position=generate_random_dot_position_in_inner_square_of_arena() 
+		dot.reposition(new_position)
 
-def display_random_dot_motion(motion_coherence,number_dots,time_duration=MAX_RESPONSE_DELAY): #test to display a single dot moving in a circular area
-	movement = [0, 0]
+def display_random_dot_motion(motion_coherence,direction,number_dots,time_duration=MAX_RESPONSE_DELAY): 
 	dot_list = generate_n_dots(N_DOTS)	
-	stimuli.BlankScreen().present()
-	arena=stimuli.Circle(radius=RADIUS_OF_ARENA+2*RADIUS_OF_DOTS,colour=COLOR_OF_ARENA)
-	cue.present()
+	generate_and_present_blankscreen()
+	arena=generate_arena()
+	cue=generate_cue()
+
+	display_cue(cue)
 	exp.clock.wait(1000)
+	
 	exp.clock.reset_stopwatch()
 	while exp.clock.stopwatch_time < time_duration:
+
 		erase_list=create_erase_list_for_dot_list(dot_list)
-		for dot in dot_list :
-			dot.move(movement)
-			if distance_to_center(dot.position)>RADIUS_OF_ARENA : 
-				movement[0],movement[1]=-movement[0],-movement[1]
-		arena.present(clear=False,update=False)
+
+		indexes_of_coherent_dots=list_of_indexes_of_dots_with_coherent_movement(motion_coherence,dot_list)
+		update_all_dots_position(dot_list,indexes_of_coherent_dots,direction)
+
+		display_arena(arena)
 		erase_previous_position_of_dots_with_erase_list(erase_list)
 		display_dots_in_dot_list(dot_list)
+
+		dots_out=dots_out_of_arena(dot_list)
+		relocate_dots_out_of_arena(dots_out)
+
 		exp.screen.update()  # refesh screen
 		exp.keyboard.check()    # ensure that keyboard input is proccesed # to quit experiment with ESC
 		exp.clock.wait(1)
 
 
+exp = design.Experiment(name="Random Dot Motion Task")
+control.initialize(exp)
+
+blankscreen = stimuli.BlankScreen()
+instructions = stimuli.TextScreen("Instructions",
+    f"""blablabla.""")
+
+
+trials=np.random.shuffle(MOTION_COHERENCE)
+
 control.start()
 
-display_random_dot_motion(50,1,time_duration=5000)
+display_random_dot_motion(50,'left',N_DOTS,time_duration=5000)
 
 control.end()
