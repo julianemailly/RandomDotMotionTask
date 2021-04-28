@@ -7,7 +7,8 @@ N_DOTS=25
 LEFT_RESPONSE=misc.constants.K_LEFT
 RIGHT_RESPONSE=misc.constants.K_RIGHT
 MOTION_COHERENCE=np.tile(np.linspace(0,100,5),5)
-NUMBER_TRIALS=len(MOTION_COHERENCE)
+N_TRIALS=len(MOTION_COHERENCE)
+DIRECTION=['left' for k in range (int(N_TRIALS/2))]+['right' for k in range (int(N_TRIALS/2)+1)]
 MAX_RESPONSE_DELAY=5000
 COLOR_OF_ARENA=misc.constants.C_GREY
 COLOR_OF_DOTS=misc.constants.C_WHITE
@@ -16,6 +17,12 @@ RADIUS_OF_DOTS=5
 WIDTH_INNER_SQUARE=2*RADIUS_OF_ARENA/m.sqrt(2)
 MOVEMENT_TO_THE_LEFT=[-2,0]
 MOVEMENT_TO_THE_RIGHT=[2,0]
+
+def expected_key_response(direction):
+	if direction=='left':
+		return(LEFT_RESPONSE)
+	elif direction=='right':
+		return(RIGHT_RESPONSE)
 
 def generate_and_present_blankscreen():
 	stimuli.BlankScreen().present()
@@ -102,7 +109,7 @@ def relocate_dots_out_of_arena(dots_out):
 		new_position=generate_random_dot_position_in_inner_square_of_arena() 
 		dot.reposition(new_position)
 
-def display_random_dot_motion(motion_coherence,direction,number_dots,time_duration=MAX_RESPONSE_DELAY): 
+def execute_trial(motion_coherence,direction,number_dots,time_duration=MAX_RESPONSE_DELAY): 
 	dot_list = generate_n_dots(N_DOTS)	
 	generate_and_present_blankscreen()
 	arena=generate_arena()
@@ -110,9 +117,10 @@ def display_random_dot_motion(motion_coherence,direction,number_dots,time_durati
 
 	display_cue(cue)
 	exp.clock.wait(1000)
-	
+
+	key=exp.keyboard.check()
 	exp.clock.reset_stopwatch()
-	while exp.clock.stopwatch_time < time_duration:
+	while (exp.clock.stopwatch_time < time_duration) and (key is None):
 
 		erase_list=create_erase_list_for_dot_list(dot_list)
 
@@ -126,23 +134,47 @@ def display_random_dot_motion(motion_coherence,direction,number_dots,time_durati
 		dots_out=dots_out_of_arena(dot_list)
 		relocate_dots_out_of_arena(dots_out)
 
-		exp.screen.update()  # refesh screen
-		exp.keyboard.check()    # ensure that keyboard input is proccesed # to quit experiment with ESC
+		exp.screen.update()  # refresh screen
+		key=exp.keyboard.check()
+		time=exp.clock.stopwatch_time    # ensure that keyboard input is proccesed # to quit experiment with ESC
 		exp.clock.wait(1)
+	return(key,time)
+
+def randomize_trials():
+	np.random.shuffle(MOTION_COHERENCE)
+	np.random.shuffle(DIRECTION)
+
+
 
 
 exp = design.Experiment(name="Random Dot Motion Task")
 control.initialize(exp)
 
-blankscreen = stimuli.BlankScreen()
 instructions = stimuli.TextScreen("Instructions",
-    f"""blablabla.""")
+    f"""You are going to see small white dots moving in a grey circle on the screen.
+
+    Your task is to decide, as quickly as possible, if the dots are moving to the left or to the right.
+
+    If you think that they are moving to the left, press the left arrow key. If you think that they are moving to  the right, press the right arrow key.
+
+    There will be {N_TRIALS} trials in total.
+
+    Press the space bar to start.""")
 
 
-trials=np.random.shuffle(MOTION_COHERENCE)
+randomize_trials()
+exp.add_data_variable_names(['trial', 'motion_coherence','expected_resp', 'respkey', 'RT'])
+
 
 control.start()
+instructions.present()
+exp.keyboard.wait()
 
-display_random_dot_motion(50,'left',N_DOTS,time_duration=5000)
+for i_trial in range (N_TRIALS):
+	motion_coherence=MOTION_COHERENCE[i_trial]
+	direction=DIRECTION[i_trial]
+	key,rt=execute_trial(motion_coherence,direction,N_DOTS)
+	exp.data.add([i_trial, motion_coherence, expected_key_response(direction), key, rt])
+
 
 control.end()
