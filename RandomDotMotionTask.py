@@ -1,7 +1,5 @@
-from expyriment import design, control, stimuli, misc
-import random as r 
+from expyriment import design, control, stimuli, misc 
 import numpy as np 
-import math as m 
 
 N_DOTS=30
 MOTION_COHERENCE=np.tile([0,1,2,3,5,8,10,20,30,50,100],15)
@@ -16,7 +14,7 @@ COLOR_OF_DOTS=misc.constants.C_WHITE
 
 RADIUS_OF_ARENA=100
 RADIUS_OF_DOTS=5
-WIDTH_INNER_SQUARE=2*RADIUS_OF_ARENA/m.sqrt(2)
+WIDTH_INNER_SQUARE=2*RADIUS_OF_ARENA/np.sqrt(2)
 
 MOVEMENT_TO_THE_LEFT=[-2,0]
 MOVEMENT_TO_THE_RIGHT=[2,0]
@@ -35,7 +33,7 @@ def expected_key_response(direction):
 
 def distance_to_center(point):
 	x,y=point[0],point[1]
-	return(m.sqrt(x**2+y**2))
+	return(np.sqrt(x**2+y**2))
 
 def generate_random_dot_position_in_inner_square_of_arena() : 
 	x=np.random.random()*WIDTH_INNER_SQUARE-(WIDTH_INNER_SQUARE/2)
