@@ -4,7 +4,7 @@ import numpy as np
 import math as m 
 
 N_DOTS=30
-MOTION_COHERENCE=np.tile([0,1,2,3,5,8,10,15,20,30,50,100],15)
+MOTION_COHERENCE=np.tile([0,1,2,3,5,8,10,20,30,50,100],15)
 N_TRIALS=len(MOTION_COHERENCE)
 
 LEFT_RESPONSE=misc.constants.K_LEFT
@@ -21,26 +21,17 @@ WIDTH_INNER_SQUARE=2*RADIUS_OF_ARENA/m.sqrt(2)
 MOVEMENT_TO_THE_LEFT=[-2,0]
 MOVEMENT_TO_THE_RIGHT=[2,0]
 
+AMPLITUDE_RANDOM_MOVEMENT=10
+MEAN_RANDOM_MOVEMENT=5
+
+SIZE_FIXATION_CROSS=50
+LINE_WIDTH_FIXATION_CROSS=4
+
 def expected_key_response(direction):
 	if direction=='left':
 		return(LEFT_RESPONSE)
 	elif direction=='right':
 		return(RIGHT_RESPONSE)
-
-def generate_and_present_blankscreen():
-	stimuli.BlankScreen().present()
-
-def generate_cue():
-	return (stimuli.FixCross(size=(50, 50), line_width=4))
-
-def display_cue(cue):
-	cue.present()
-
-def generate_arena() : 
-	return(stimuli.Circle(radius=RADIUS_OF_ARENA+2*RADIUS_OF_DOTS,colour=COLOR_OF_ARENA))
-
-def display_arena(arena) : 
-	arena.present(clear=False,update=False)
 
 def distance_to_center(point):
 	x,y=point[0],point[1]
@@ -89,10 +80,10 @@ def move_one_coherent_dot(coherent_dot,direction) :
 		coherent_dot.move(MOVEMENT_TO_THE_RIGHT)
 
 def move_one_random_dot(random_dot) : 
-	movement=[np.random.random()*10-5,np.random.random()*10-5]
+	movement=[np.random.random()*AMPLITUDE_RANDOM_MOVEMENT-MEAN_RANDOM_MOVEMENT,np.random.random()*AMPLITUDE_RANDOM_MOVEMENT-MEAN_RANDOM_MOVEMENT]
 	random_dot.move(movement)
 
-def update_all_dots_position(dot_list,indexes_of_coherent_dots,direction) : 
+def update_all_dots_positions(dot_list,indexes_of_coherent_dots,direction) : 
 	n_dots=len(dot_list)
 	for i in range (n_dots) :
 		if i in indexes_of_coherent_dots : 
@@ -112,35 +103,42 @@ def relocate_dots_out_of_arena(dots_out):
 		new_position=generate_random_dot_position_in_inner_square_of_arena() 
 		dot.reposition(new_position)
 
+def update_stimulus(dot_list,arena):
+	erase_list=create_erase_list_for_dot_list(dot_list)
+
+	indexes_of_coherent_dots=list_of_indexes_of_dots_with_coherent_movement(motion_coherence,dot_list)
+	update_all_dots_positions(dot_list,indexes_of_coherent_dots,direction)
+	arena.present(clear=False,update=False)
+	erase_previous_position_of_dots_with_erase_list(erase_list)
+	display_dots_in_dot_list(dot_list)
+
+	dots_out=dots_out_of_arena(dot_list)
+	relocate_dots_out_of_arena(dots_out)
+	exp.screen.update()
+
+def check_keyboard_response_and_time():
+	key=exp.keyboard.check()
+	time=exp.clock.stopwatch_time 
+	return(key,time) 
+
 def execute_trial(motion_coherence,direction,number_dots,time_duration=MAX_RESPONSE_DELAY): 
 	dot_list = generate_n_dots(N_DOTS)	
-	generate_and_present_blankscreen()
-	arena=generate_arena()
-	cue=generate_cue()
+	stimuli.BlankScreen().present()
+	arena=stimuli.Circle(radius=RADIUS_OF_ARENA+2*RADIUS_OF_DOTS,colour=COLOR_OF_ARENA)
+	cue=stimuli.FixCross(size=(SIZE_FIXATION_CROSS, SIZE_FIXATION_CROSS), line_width=LINE_WIDTH_FIXATION_CROSS)
 
-	display_cue(cue)
+	cue.present()
 	exp.clock.wait(1000)
 
 	key=exp.keyboard.check()
 	exp.clock.reset_stopwatch()
+
 	while (exp.clock.stopwatch_time < time_duration) and (key is None):
 
-		erase_list=create_erase_list_for_dot_list(dot_list)
-
-		indexes_of_coherent_dots=list_of_indexes_of_dots_with_coherent_movement(motion_coherence,dot_list)
-		update_all_dots_position(dot_list,indexes_of_coherent_dots,direction)
-
-		display_arena(arena)
-		erase_previous_position_of_dots_with_erase_list(erase_list)
-		display_dots_in_dot_list(dot_list)
-
-		dots_out=dots_out_of_arena(dot_list)
-		relocate_dots_out_of_arena(dots_out)
-
-		exp.screen.update()  
-		key=exp.keyboard.check()
-		time=exp.clock.stopwatch_time  
+		update_stimulus(dot_list,arena)
+		key,time=check_keyboard_response_and_time() 
 		exp.clock.wait(1)
+
 	return(key,time)
 
 def randomize_trials():
@@ -153,7 +151,7 @@ def choose_random_direction():
 exp = design.Experiment(name="Random Dot Motion Task")
 control.initialize(exp)
 
-instructions = stimuli.TextScreen("Instructions",
+INSTRUCTIONS = stimuli.TextScreen("Instructions",
     f"""You are going to see small white dots moving in a grey circle on the screen.
 
     Your task is to decide, as quickly as possible, if the dots are moving to the left or to the right.
@@ -170,7 +168,7 @@ exp.add_data_variable_names(['trial', 'motion_coherence','expected_resp', 'respk
 
 
 control.start()
-instructions.present()
+INSTRUCTIONS.present()
 exp.keyboard.wait()
 
 for i_trial in range (N_TRIALS):
