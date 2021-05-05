@@ -3,18 +3,21 @@ import random as r
 import numpy as np 
 import math as m 
 
-N_DOTS=25
+N_DOTS=30
+MOTION_COHERENCE=np.tile([0,1,2,3,5,8,10,15,20,30,50,100],15)
+N_TRIALS=len(MOTION_COHERENCE)
+
 LEFT_RESPONSE=misc.constants.K_LEFT
 RIGHT_RESPONSE=misc.constants.K_RIGHT
-MOTION_COHERENCE=np.tile(np.linspace(0,100,5),5)
-N_TRIALS=len(MOTION_COHERENCE)
-DIRECTION=['left' for k in range (int(N_TRIALS/2))]+['right' for k in range (int(N_TRIALS/2)+1)]
 MAX_RESPONSE_DELAY=5000
+
 COLOR_OF_ARENA=misc.constants.C_GREY
 COLOR_OF_DOTS=misc.constants.C_WHITE
+
 RADIUS_OF_ARENA=100
 RADIUS_OF_DOTS=5
 WIDTH_INNER_SQUARE=2*RADIUS_OF_ARENA/m.sqrt(2)
+
 MOVEMENT_TO_THE_LEFT=[-2,0]
 MOVEMENT_TO_THE_RIGHT=[2,0]
 
@@ -134,17 +137,17 @@ def execute_trial(motion_coherence,direction,number_dots,time_duration=MAX_RESPO
 		dots_out=dots_out_of_arena(dot_list)
 		relocate_dots_out_of_arena(dots_out)
 
-		exp.screen.update()  # refresh screen
+		exp.screen.update()  
 		key=exp.keyboard.check()
-		time=exp.clock.stopwatch_time    # ensure that keyboard input is proccesed # to quit experiment with ESC
+		time=exp.clock.stopwatch_time  
 		exp.clock.wait(1)
 	return(key,time)
 
 def randomize_trials():
 	np.random.shuffle(MOTION_COHERENCE)
-	np.random.shuffle(DIRECTION)
 
-
+def choose_random_direction():
+	return(np.random.choice(['left','right'],1)[0])
 
 
 exp = design.Experiment(name="Random Dot Motion Task")
@@ -172,7 +175,7 @@ exp.keyboard.wait()
 
 for i_trial in range (N_TRIALS):
 	motion_coherence=MOTION_COHERENCE[i_trial]
-	direction=DIRECTION[i_trial]
+	direction=choose_random_direction()
 	key,rt=execute_trial(motion_coherence,direction,N_DOTS)
 	exp.data.add([i_trial, motion_coherence, expected_key_response(direction), key, rt])
 
