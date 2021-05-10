@@ -55,11 +55,11 @@ The first figure is the psychometric curve, i.e. the fraction of correct answers
 
 I have a background in mathematics, physics and computer science (and also in psychology). I learned the basics of coding during my preparatory classes for the Grandes Ecoles, where I chose the computer science optional curriculum. We were using Python and Caml. During these two years, I had to do two projects (Travaux d'initiative Personnelle Encadrée) and I did them both in programming. I continued to use Python at the university in some classes and also in my intership this year (as well as ROS, which is not a language but is used to develop robot softwares). During this first year of Cogmaster, I have learned R for the Datacamp class but mostly for an external course about statistics and classification. I also had an algorithmics project during the first semester  (about the A-star algorithm). In a word, I have a good coding experience in several languages and I am quite used to this kind of projects.
 
-# What I have learned since
+### What I have learned since
 
 I have learned a lot about coding experiments (and the expyriment and pygame modules in general), which is a skill that will be definitely useful for me. I also (re)discovered regular expressions that seem very helpful. But the most important in my opinion was the principles of clean code that I will try to use in my scripts from now on.
 
 
-# What I missed in this course
+### What I missed in this course
 
 I feel like there could have been a course dedicated to expyriment, which is not that easy to understand. Also, it might be relevant to divide this course into levels like Datacamp, so that everybody can learn at their own pace.
