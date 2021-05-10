@@ -12,20 +12,23 @@ Since this task is very famous, there is no specific article which is dedicated 
 ## How to install the experiment on your computer
 
 To run this experiment on your computer, you will need Python and the following modules:
-..* expyriment
-..* numpy
-..* sys
-..* pandas
-..* matplotlib.pyplot
-..* seaborn
+* expyriment
+* numpy
+* sys
+* pandas
+* matplotlib.pyplot
+* seaborn
 
-Now that you have installed Python and the required packages, you can download the code at INSERT LINK and unzip it.
+Now that you have installed Python and the required packages, you can download the folder containing the code [here](http://github.com/julianemailly/RandomDotMotionTask/archive/refs/heads/master.zip) and unzip it. The best is to place the unzipped folder in your home directory.
+
 To run the experiment, use these commands in a terminal:
 
 ```
 cd RandomDotMotionTask
 python RandomDotMotionTask.py
 ```
+
+Be careful! The folder is sometimes downloaded as `RandomDotMotionTask-master`. in this case, use `cd RandomDotMotionTask-master` instead of `cd RandomDotMotionTask`. 
 
 ## Analysis of the results
 
@@ -47,3 +50,16 @@ where `ID` should be the subject ID number you entered at the beginning of the e
 The first figure is the psychometric curve, i.e. the fraction of correct answers as a function of the motion coherence. The second one shows the reaction time as a function of the motion coherence. In both plots, the standard deviation is represented as a transparent band.
 
 ##Personal background
+
+#My previous coding experience
+
+I have a background in mathematics, physics and computer science (and also in psychology). I learned the basics of coding during my preparatory classes for the Grandes Ecoles, where I chose the computer science optional curriculum. We were using Python and Caml. During these two years, I had to do two projects (Travaux d'initiative Personnelle Encadrée) and I did them both in programming. I continued to use Python at the university in some classes and also in my intership this year (as well as ROS, which is not a language but is used to develop robot softwares). During this first year of Cogmaster, I have learned R for the Datacamp class but mostly for an external course about statistics and classification. I also had an algorithmics project during the first semester  (about the A-star algorithm). In a word, I have a good coding experience in several languages and I am quite used to this kind of projects.
+
+#What I have learned since
+
+I have learned a lot about coding experiments (and the expyriment and pygame modules in general), which is a skill that will be definitely useful for me. I also (re)discovered regular expressions that seem very helpful. But the most important in my opinion was the principles of clean code that I will try to use in my scripts from now on.
+
+
+#What I missed in this course
+
+I feel like there could have been a course dedicated to expyriment, which is not that easy to understand. Also, it might be relevant to divide this course into levels like Datacamp, so that everybody can learn at their own pace.
