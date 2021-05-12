@@ -52,13 +52,13 @@ The first figure is the psychometric curve, i.e. the fraction of correct answers
 Here you can see an example of psychometric function (Figure 1.) and reaction-time function (Figure 2.) obtained by analysing the data of an experiment:
 
 <p align="center">
-	<img src="psychometric_function_example.png?raw=True" height=350 width=350>
+	<img src="psychometric_function_example.png?raw=True">
 </p>
 
 *Fig1. Proportion of correct answers as a function of the motion coherence of the dots.*
 
 <p align="center">
-	<img src="RT_function_example.png?raw=True" height=350 width=350>
+	<img src="RT_function_example.png?raw=True">
 </p>
 
 *Fig2. Reaction time as a function of the motion coherence of the dots.*
