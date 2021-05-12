@@ -49,6 +49,24 @@ where `ID` should be the subject ID number you entered at the beginning of the e
 
 The first figure is the psychometric curve, i.e. the fraction of correct answers as a function of the motion coherence. The second one shows the reaction time as a function of the motion coherence. In both plots, the standard deviation is represented as a transparent band.
 
+Here you can see an example of psychometric function (Figure 1.) and reaction-time function (Figure 2.) obtained by analysing the data of an experiment:
+
+<p align="center">
+	<img src="psychometric_function_example.png?raw=True" height=350 width=350>
+</p>
+
+*Fig1. Proportion of correct answers as a function of the motion coherence of the dots.*
+
+<p align="center">
+	<img src="RT_function_example.png?raw=True" height=350 width=350>
+</p>
+
+*Fig2. Reaction time as a function of the motion coherence of the dots.*
+
+## Possible improvements
+
+The next steps could be to program an algorithm that adjusts the difficulty of the task (i.e. the motion coherence) to the participant in order to find the exact threshold for a coherent motion to be detected. It could also be interesting to code different Random Dot Motion algorithms and compare their influence on the performance of the participant.
+
 ## Personal background
 
 ### My previous coding experience
