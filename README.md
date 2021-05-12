@@ -57,9 +57,9 @@ I have a background in mathematics, physics and computer science (and also in ps
 
 ### What I have learned since
 
-I have learned a lot about coding experiments (and the expyriment and pygame modules in general), which is a skill that will be definitely useful for me. I also (re)discovered regular expressions that seem very helpful. But the most important in my opinion was the principles of clean code that I will try to use in my scripts from now on.
+I have learned a lot about coding experiments (and the `expyriment` and `pygame` modules in general) and how to use `git`, which is a skill that will be definitely useful for me. I also (re)discovered regular expressions that seem very helpful. But the most important in my opinion was the principles of clean code that I will try to use in my scripts from now on.
 
 
 ### What I missed in this course
 
-I feel like there could have been a course dedicated to expyriment, which is not that easy to understand. Also, it might be relevant to divide this course into levels like Datacamp, so that everybody can learn at their own pace.
+I feel like there could have been a course dedicated to `expyriment`, which is not that easy to understand. Also, it might be relevant to divide this course into levels like Datacamp, so that everybody can learn at their own pace.
