@@ -23,10 +23,19 @@ if len(sys.argv) < 2:
 
 data = pd.read_csv(sys.argv[1], comment='#')
 
-correct_response=data['respkey']==data['expected_resp']
-data['correct_response']=[int(b) for b in correct_response]
+nrows=len(data['expected_resp'])
+
+correct_response=[]
+for trial in range (nrows):
+	if data['respkey'][trial]!='None' and int(data['respkey'][trial])==int(data['expected_resp'][trial]):
+		correct_response.append(1)
+	else :
+		correct_response.append(0)
+data['correct_response']=correct_response
 
 id_subject=str(data['subject_id'][0])
+
+
 
 
 fig1=plt.figure()
