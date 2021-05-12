@@ -1,3 +1,10 @@
+'''
+Running this code will display a Random Dot Motion task with expyriment. The stimuli are created thanks to the White Noise algorithm. 
+Each trial is charaterised by the motion coherence of the dots and the direction of the movement is chosen randomly before each trial.
+The default parameters of this experiments (motion coherence: 0%, 1%, 2%, 3%, 5%, 8%, 10%, 20%, 30%, 50%, 100%, each repeated 15 times) give a good psychometric function when analysed with analysis.py.
+'''
+
+
 from expyriment import design, control, stimuli, misc 
 import numpy as np 
 
